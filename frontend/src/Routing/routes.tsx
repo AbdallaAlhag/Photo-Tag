@@ -1,13 +1,17 @@
-import { HomePage }  from '../Pages';
+import { HomePage, LeaderboardPage, ErrorPage }  from '../Pages';
 
 export const routes = [
     {
         path: "/",
         element: <HomePage />,  
     },
-    // {
-    //     // Catch-all route for 404 errors
-    //     path: '*',
-    //     // element: <ErrorPage />,
-    //   },
+    {
+        path: "/leaderboard",
+        element: <LeaderboardPage />,
+    },
+    {
+        // Catch-all route for 404 errors
+        path: '*',
+        element: <ErrorPage />,
+      },
 ]
