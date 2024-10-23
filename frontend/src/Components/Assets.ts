@@ -1,0 +1,43 @@
+// Import main map images
+import map1 from "../assets/map/map1.webp";
+import map2 from "../assets/map/map2.jpg";
+import map3 from "../assets/map/map3.webp";
+
+// Import character images for each map
+import map1_1 from "../assets/map/map1-1.jpg";
+import map1_2 from "../assets/map/map1-2.jpg";
+import map1_3 from "../assets/map/map1-3.jpg";
+
+import map2_1 from "../assets/map/map2-1.jpg";
+import map2_2 from "../assets/map/map2-2.jpg";
+import map2_3 from "../assets/map/map2-3.jpg";
+
+import map3_1 from "../assets/map/map3-1.png";
+import map3_2 from "../assets/map/map3-2.png";
+import map3_3 from "../assets/map/map3-3.png";
+
+type Map = {
+    map: string;
+    characters: string[];
+    names: string[]; // if you are using names
+  };
+// Object to organize maps and their characters
+const maps: Record<string, Map> = {
+  map1: {
+    map: map1,
+    characters: [map1_1, map1_2, map1_3],
+    names: ['Browser', 'Neo', 'Link']
+  },
+  map2: {
+    map: map2,
+    characters: [map2_1, map2_2, map2_3],
+    names: ['Totoro', 'Guts', 'Koffing ']
+  },
+  map3: {
+    map: map3,
+    characters: [map3_1, map3_2, map3_3],
+    names: ['Bird', 'Hippo', 'Dragon ']
+  },
+};
+
+export default maps;

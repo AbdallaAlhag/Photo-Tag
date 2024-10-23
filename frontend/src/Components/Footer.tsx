@@ -3,7 +3,7 @@ import { Github } from "lucide-react";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-white shadow-md mt-8">
+    <footer className="bg-white shadow-md mt-0">
       <div className="container mx-auto px-4 py-4 flex justify-center">
         <a
           href="https://github.com/AbdallaAlhag/Photo-Tag"
