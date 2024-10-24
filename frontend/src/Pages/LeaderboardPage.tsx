@@ -21,6 +21,8 @@ interface LeaderboardEntry {
 }
 
 const LeaderboardPage: React.FC = () => {
+  const baseURL = import.meta.env.VITE_API_BASE_URL;
+  console.log('baseURL: ',baseURL);
   const [activeMap, setActiveMap] = useState<number | null>(null);
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
     []
@@ -34,7 +36,7 @@ const LeaderboardPage: React.FC = () => {
       setError(null);
 
       axios
-        .get(`http://localhost:3000/leaderboard/${activeMap}`)
+        .get(`${baseURL}/leaderboard/${activeMap}`)
         .then((response) => {
           const formattedData = response.data.map(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -59,7 +61,7 @@ const LeaderboardPage: React.FC = () => {
           setIsLoading(false);
         });
     }
-  }, [activeMap]);
+  }, [activeMap, baseURL]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">

@@ -16,6 +16,8 @@ interface Character {
 
 const GamePage: React.FC = () => {
   const navigate = useNavigate();
+  const baseURL = import.meta.env.VITE_API_BASE_URL;
+
   const { mapId } = useParams<{ mapId: string }>();
   const currentMapKey = `map${mapId}` as keyof typeof maps;
   const currentMapData = maps[currentMapKey];
@@ -124,7 +126,7 @@ const GamePage: React.FC = () => {
   const handleUsernameSubmit = () => {
     if (username.trim()) {
       console.log(`Game completed by ${username} in ${timer} seconds`);
-      axios.post("http://localhost:3000/leaderboard", {
+      axios.post(`${baseURL}}/leaderboard`, {
         username,
         time: timer,
         mapId,
