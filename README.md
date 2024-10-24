@@ -7,9 +7,8 @@ todo:
     gamePage:
         - good for now
     leaderboard:
-        - show leaderboard table with correct info
-        - add pagination
-        - add username search + search query
+        - Good
+        - add some test files for backend
     Deploy: (Should be pretty easy, maybe try something new? vercel, or aws?)
         - deploy to railway
         - deploy to netlify
