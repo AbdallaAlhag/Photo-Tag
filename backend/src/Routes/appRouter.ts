@@ -42,7 +42,6 @@ router.get('/leaderboard/:id', async (req, res) => {
         time: 'asc',
       }
     });
-    console.log(leaderboard);
     res.json(leaderboard);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch leaderboard' });
