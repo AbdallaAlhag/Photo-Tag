@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Footer, Header } from "../Components";
+import axios from "axios";
 
 import map1 from "../assets/map/map1.webp";
 import map2 from "../assets/map/map2.jpg";
@@ -29,6 +30,21 @@ const mockLeaderboard: LeaderboardEntry[] = [
 const LeaderboardPage: React.FC = () => {
   const [activeMap, setActiveMap] = useState<number | null>(null);
 
+  const handleMapClick = (mapIndex: number) => {
+    setActiveMap(mapIndex);
+    try {
+      axios
+        .get(`http://localhost:3000/leaderboard/${mapIndex}`)
+        .then((response) => {
+          console.log('hi?', response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <Header/>
@@ -44,7 +60,7 @@ const LeaderboardPage: React.FC = () => {
               className={`bg-white rounded-lg shadow-md overflow-hidden cursor-pointer ${
                 activeMap === index ? 'ring-2 ring-blue-500' : ''
               }`}
-              onClick={() => setActiveMap(index)}
+              onClick={() => handleMapClick(index)}
             >
               <img
                 src={map.image}

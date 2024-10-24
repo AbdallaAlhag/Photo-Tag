@@ -1,15 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { Footer, maps } from "../Components";
+import axios from "axios";
 
 interface Character {
   id: number;
   name: string;
   image: string;
   found: boolean;
+  xPercentage: number;
+  yPercentage: number;
+  widthPercentage: number;
+  heightPercentage: number;
 }
 
 const GamePage: React.FC = () => {
+  const navigate = useNavigate();
   const { mapId } = useParams<{ mapId: string }>();
   const currentMapKey = `map${mapId}` as keyof typeof maps;
   const currentMapData = maps[currentMapKey];
@@ -19,6 +25,10 @@ const GamePage: React.FC = () => {
       name,
       image: currentMapData.characters[index],
       found: false,
+      xPercentage: currentMapData.xPercentage[index],
+      yPercentage: currentMapData.yPercentage[index],
+      widthPercentage: currentMapData.widthPercentage[index],
+      heightPercentage: currentMapData.heightPercentage[index],
     }))
   );
   const [scrollY, setScrollY] = useState(0);
@@ -28,12 +38,20 @@ const GamePage: React.FC = () => {
     x: number;
     y: number;
     visible: boolean;
+    characters: Character[];
   }>({
     x: 0,
     y: 0,
     visible: false,
+    characters: [],
   });
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [tooltip] = useState<{ visible: boolean; message: string }>({
+    visible: false,
+    message: "",
+  });
+  const [showUsernamePopup, setShowUsernamePopup] = useState(false);
+  const [username, setUsername] = useState("");
 
   const mapRef = useRef<HTMLDivElement>(null);
 
@@ -48,13 +66,35 @@ const GamePage: React.FC = () => {
   }, [gameCompleted]);
 
   const handleClick = (e: React.MouseEvent) => {
+    // Check if the click is inside the context menu
+    if ((e.target as HTMLElement).closest(".context-menu")) {
+      return; // Do nothing if clicking inside the context menu
+    }
+
     if (mapRef.current) {
       const rect = mapRef.current.getBoundingClientRect();
-      setContextMenu({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        visible: true,
-      });
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+      const clickableCharacters = characters.filter(
+        (character) =>
+          !character.found &&
+          x >= character.xPercentage &&
+          x <= character.xPercentage + character.widthPercentage &&
+          y >= character.yPercentage &&
+          y <= character.yPercentage + character.heightPercentage
+      );
+
+      if (clickableCharacters.length > 0) {
+        setContextMenu({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+          visible: true,
+          characters: clickableCharacters,
+        });
+      } else {
+        setContextMenu({ ...contextMenu, visible: false, characters: [] });
+      }
     }
   };
 
@@ -73,16 +113,30 @@ const GamePage: React.FC = () => {
       c.id === character.id ? { ...c, found: true } : c
     );
     setCharacters(updatedCharacters);
-    setContextMenu({ ...contextMenu, visible: false });
+    setContextMenu({ ...contextMenu, visible: false, characters: [] });
 
     if (updatedCharacters.every((c) => c.found)) {
       setGameCompleted(true);
-      // TODO: Send completion time to backend
-      console.log(`Game completed in ${timer} seconds`);
+      setShowUsernamePopup(true);
     }
   };
 
-  const opacity = Math.max(1 - scrollY / 500, 0.5); // Minimum opacity of 0.5 after scrolling 500px
+  const handleUsernameSubmit = () => {
+    if (username.trim()) {
+      console.log(`Game completed by ${username} in ${timer} seconds`);
+      axios.post("http://localhost:3000/leaderboard", {
+        username,
+        time: timer,
+        mapId,
+      });
+      setShowUsernamePopup(false);
+      navigate("/leaderboard");
+    }
+    setShowUsernamePopup(false);
+  };
+
+  const headerOpacity = Math.max(1 - scrollY / 500, 0.5);
+  const characterImageOpacity = Math.max(1 - (scrollY / 500) * 0.15, 0.85);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -108,31 +162,44 @@ const GamePage: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-gray-100">
       <header
         className="bg-white shadow-md sticky top-0 z-10 transition-opacity duration-300"
-        style={{ opacity }}
+        style={{ opacity: headerOpacity }}
       >
         <div className="container mx-auto px-4 py-2 flex items-center justify-between">
           <Link
             to="/"
             className="text-2xl font-bold text-gray-600 hover:text-gray-800"
+            style={{ opacity: headerOpacity }}
           >
             Photo-Tag
           </Link>
           <div className="flex items-center space-x-6">
-            <div className="text-2xl font-semibold">{formatTime(timer)}</div>
-            <div className="flex space-x-4 ">
+            <div
+              className="text-2xl font-semibold"
+              style={{ opacity: headerOpacity }}
+            >
+              {formatTime(timer)}
+            </div>
+            <div className="flex space-x-4">
               {characters.map((character) => (
                 <div
                   key={character.id}
-                  className={`flex flex-row gap-1 items-center ${
-                    character.found ? "opacity-50" : ""
-                  }`}
+                  className={`flex flex-row gap-1 items-center`}
+                  style={{ opacity: character.found ? 0.5 : 1 }}
                 >
                   <img
                     src={character.image}
                     alt={character.name}
                     className="w-20 h-20 object-contain rounded-lg"
+                    style={{ opacity: characterImageOpacity }}
                   />
-                  <span className="mt-1">{character.name}</span>
+                  <span
+                    className="mt-1"
+                    style={{
+                      color: character.found ? "red" : "black",
+                    }}
+                  >
+                    {character.name}
+                  </span>
                 </div>
               ))}
             </div>
@@ -140,7 +207,7 @@ const GamePage: React.FC = () => {
         </div>
       </header>
 
-      <main className="flex-grow">
+      <main className="flex-grow overflow-x-hidden">
         <div
           ref={mapRef}
           className="relative w-full bg-cover bg-center cursor-crosshair"
@@ -156,17 +223,17 @@ const GamePage: React.FC = () => {
           <div
             className="pointer-events-none absolute border-2 border-red-500 rounded-full w-16 h-16"
             style={{
-              left: cursorPosition.x - 32,
-              top: cursorPosition.y - 32,
+              left: cursorPosition.x,
+              top: cursorPosition.y,
               transform: "translate(-50%, -50%)",
             }}
           ></div>
           {contextMenu.visible && (
             <div
-              className="absolute bg-gray-800 text-white p-2 rounded shadow-lg"
+              className="absolute bg-gray-800 text-white p-2 rounded shadow-lg context-menu"
               style={{ left: contextMenu.x, top: contextMenu.y }}
             >
-              {characters.map((character) => (
+              {contextMenu.characters.map((character) => (
                 <div
                   key={character.id}
                   className="flex items-center space-x-2 cursor-pointer hover:bg-gray-700 p-1 rounded"
@@ -182,10 +249,46 @@ const GamePage: React.FC = () => {
               ))}
             </div>
           )}
+          {tooltip.visible && (
+            <div
+              className="absolute bg-black bg-opacity-75 text-white px-2 py-1 rounded"
+              style={{
+                left: cursorPosition.x,
+                top: cursorPosition.y + 20,
+                transform: "translateX(-50%)",
+              }}
+            >
+              {tooltip.message}
+            </div>
+          )}
         </div>
       </main>
 
       <Footer />
+
+      {showUsernamePopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-xl">
+            <h2 className="text-2xl font-bold mb-4">Congratulations!</h2>
+            <p className="mb-4">
+              You completed the game in {formatTime(timer)}.
+            </p>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
+              className="w-full p-2 border border-gray-300 rounded mb-4"
+            />
+            <button
+              onClick={handleUsernameSubmit}
+              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+            >
+              Submit Score
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
