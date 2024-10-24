@@ -126,7 +126,7 @@ const GamePage: React.FC = () => {
   const handleUsernameSubmit = () => {
     if (username.trim()) {
       console.log(`Game completed by ${username} in ${timer} seconds`);
-      axios.post(`${baseURL}}/leaderboard`, {
+      axios.post(`${baseURL}/leaderboard`, {
         username,
         time: timer,
         mapId,
