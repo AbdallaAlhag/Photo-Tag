@@ -1,0 +1,158 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 16.4
+-- Dumped by pg_dump version 16.4
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: MapType; Type: TYPE; Schema: public; Owner: alhag
+--
+
+CREATE TYPE public."MapType" AS ENUM (
+    'MAP1',
+    'MAP2',
+    'MAP3'
+);
+
+
+ALTER TYPE public."MapType" OWNER TO alhag;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: User; Type: TABLE; Schema: public; Owner: alhag
+--
+
+CREATE TABLE public."User" (
+    id integer NOT NULL,
+    name text NOT NULL,
+    "time" numeric(65,30),
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    map public."MapType" NOT NULL
+);
+
+
+ALTER TABLE public."User" OWNER TO alhag;
+
+--
+-- Name: User_id_seq; Type: SEQUENCE; Schema: public; Owner: alhag
+--
+
+CREATE SEQUENCE public."User_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public."User_id_seq" OWNER TO alhag;
+
+--
+-- Name: User_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alhag
+--
+
+ALTER SEQUENCE public."User_id_seq" OWNED BY public."User".id;
+
+
+--
+-- Name: _prisma_migrations; Type: TABLE; Schema: public; Owner: alhag
+--
+
+CREATE TABLE public._prisma_migrations (
+    id character varying(36) NOT NULL,
+    checksum character varying(64) NOT NULL,
+    finished_at timestamp with time zone,
+    migration_name character varying(255) NOT NULL,
+    logs text,
+    rolled_back_at timestamp with time zone,
+    started_at timestamp with time zone DEFAULT now() NOT NULL,
+    applied_steps_count integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public._prisma_migrations OWNER TO alhag;
+
+--
+-- Name: User id; Type: DEFAULT; Schema: public; Owner: alhag
+--
+
+ALTER TABLE ONLY public."User" ALTER COLUMN id SET DEFAULT nextval('public."User_id_seq"'::regclass);
+
+
+--
+-- Data for Name: User; Type: TABLE DATA; Schema: public; Owner: alhag
+--
+
+COPY public."User" (id, name, "time", "createdAt", map) FROM stdin;
+1	john 	2.000000000000000000000000000000	2024-10-23 22:09:34.684	MAP1
+2	test	7.000000000000000000000000000000	2024-10-23 22:13:55.2	MAP3
+6	test2	8.000000000000000000000000000000	2024-10-23 22:19:59.041	MAP3
+8	asd	10.000000000000000000000000000000	2024-10-24 17:41:48.73	MAP3
+10	test3	71.000000000000000000000000000000	2024-10-24 17:51:48.563	MAP3
+11	lkajsdlfkj	9.000000000000000000000000000000	2024-10-24 17:52:47.306	MAP3
+12	asdfadsf	9.000000000000000000000000000000	2024-10-24 17:53:03.098	MAP3
+13	john wayne	23.000000000000000000000000000000	2024-10-24 18:03:11.177	MAP3
+14	backend test	14.000000000000000000000000000000	2024-10-24 18:20:15.771	MAP3
+16	adsfadsf	5.000000000000000000000000000000	2024-10-24 19:15:46.892	MAP3
+17	asdfasd	5.000000000000000000000000000000	2024-10-24 19:15:57.4	MAP3
+18	sssss	8.000000000000000000000000000000	2024-10-24 19:16:11.018	MAP3
+19	459	39.000000000000000000000000000000	2024-10-24 22:29:46.011	MAP1
+21	yay	9.000000000000000000000000000000	2024-10-24 22:31:27.804	MAP2
+23	nay	9.000000000000000000000000000000	2024-10-24 22:32:22.186	MAP2
+\.
+
+
+--
+-- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: alhag
+--
+
+COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count) FROM stdin;
+878a72cd-db9b-4ad0-9659-ab72099ec8c9	a6e999d295de42775e70aecd38eca9b37e9490dccced31731d7651ee91b1df25	2024-10-22 12:17:02.820342-07	20241022191702_init	\N	\N	2024-10-22 12:17:02.798914-07	1
+0b5da9be-4aaa-4d5a-9d0e-443eaa39e7d5	b041bc7ffd6c4e0ba3b87e4c92499233655ee88c47dbb4ceacde0f204c212c50	2024-10-23 14:55:23.254024-07	20241023215523_add_usertime_model	\N	\N	2024-10-23 14:55:23.23795-07	1
+c39760ed-3a81-4790-a778-a454019d2dac	3bc1d88990d940c2a86d32aa876ef2550e7e73ae0f641ef5c44fe6e3471d4042	2024-10-24 15:33:38.788037-07	20241024223338_name_not_unique	\N	\N	2024-10-24 15:33:38.774702-07	1
+\.
+
+
+--
+-- Name: User_id_seq; Type: SEQUENCE SET; Schema: public; Owner: alhag
+--
+
+SELECT pg_catalog.setval('public."User_id_seq"', 23, true);
+
+
+--
+-- Name: User User_pkey; Type: CONSTRAINT; Schema: public; Owner: alhag
+--
+
+ALTER TABLE ONLY public."User"
+    ADD CONSTRAINT "User_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: _prisma_migrations _prisma_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: alhag
+--
+
+ALTER TABLE ONLY public._prisma_migrations
+    ADD CONSTRAINT _prisma_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
