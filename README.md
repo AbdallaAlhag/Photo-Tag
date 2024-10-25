@@ -1,80 +1,66 @@
-# Photo-Tagging App
 
-tree command in git bash:
-tree -I 'node_modules'
+# Photo-Tag
 
-todo:
-    gamePage:
-        - good for now
-    leaderboard:
-        - Good
-        - add some test files for backend
-    Deploy: (Should be pretty easy, maybe try something new? vercel, or aws?)
-        - deploy to railway
-        - deploy to netlify
+Photo-Tag is a "Where's Wally?"-style web application that challenges users to identify characters in an interactive map. Players can compete against others in real-time, saving their usernames and times on a leaderboard to showcase their skills.
 
-map3:
-    w: 2902px
-    h: 4096px
+## Cool command I found:
+    tree command in git bash:
+    tree -I 'node_modules'
 
-    Percentages:
-    item 1:
-        top left of our square radius 
-        x: 95.21%
-        y: 38.82%
-        w: 1.79%
-        h: 2.54%
-        item 2: 
-            x: 70.09
-            y: 48.24
-            w: 9.92
-            h: 4.64
-            item 3: 
-                x: 19.61    
-                y: 67.63    
-                w: 11.68    
-                h: 3.86
+## Features
 
-map1:
-    w: 1080
-    h: 4547
+- **Interactive Maps**: Explore engaging maps filled with characters to find.
+- **Real-time Leaderboard**: Compete with others by saving your username and best times.
+- **Responsive Design**: Play on any device with a seamless user experience.
+## Technologies Used
 
-    Percentages:
-    item 1:
-        top left of our square radius 
-        x: 78.61%
-        y: 39.89%
-        w: 10.56%
-        h: 2.13%
-        item 2: 
-            x: 38.52
-            y: 59.56
-            w: 5.46
-            h: 1.06
-            item 3: 
-                x: 19.72    
-                y: 95.21    
-                w: 4.91    
-                h: 0.95
+- **Frontend:** React, Vite, Typescript, Tailwind, Axios, Vitest
 
-map2:
-    w: 1920
-    h: 2715
+- **Backend:** Node.js, Express, Prisma, PostgreSQL, SuperTest
 
-    Percentages:
-    item 1:
-        top left of our square radius 
-        x: 70.00%
-        y: 52.60%
-        w: 1.98%
-        h: 3.06%
-        item 2: 
-            x: 45.31
-            y: 86.56
-            w: 5.46
-            h: 1.06
-            item 3: 
-                x: 44.84   
-                y: 64.49   
-                w: 7.14   
-                h: 5.56
+## Deployment
+
+  - [Railway](https://railway.app/) for backend deployment
+  - [Netlify](https://www.netlify.com/) for frontend deployment
+## Installation
+
+To set up the project locally, follow these steps:
+```bash
+git clone https://github.com/AbdallaAlhag/Photo-Tag.git
+cd Photo-Tag
+```
+    
+Install dependencies for the backend:
+```bash
+cd backend
+npm install
+```
+
+Set up your environment variables. Create a .env file in the backend directory and configure it according to your setup (database URL).
+
+Start the backend server:
+```bash
+npm run dev
+```
+
+In a new terminal, navigate to the frontend directory and install dependencies:
+```bash
+cd frontend
+npm install
+```
+
+Start the frontend development server:
+
+```bash
+npm run dev
+```
+
+Open your browser and navigate to http://localhost:5173 to view the application.
+
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
+
+
